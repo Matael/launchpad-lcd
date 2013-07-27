@@ -24,14 +24,12 @@
 
 #include "lcd.h"
 
-#include "msp430g2553.h"
-
-#include "utilities.h"
+#include <msp430g2553.h>
 
 void LCD_init(
         LCD_CTRLR lcd,
-        unsigned char function_flags = CTRL_2LINES,
-        unsigned char display_flags = DISPLAY_CTRL_D
+        unsigned char function_flags,
+        unsigned char display_flags
         ) {
 
     // wait at least 15ms
@@ -49,13 +47,13 @@ void LCD_init(
     P1OUT |= lcd.d4 + lcd.d5;
     P1OUT |= lcd.e;
     __delay_cycles(5000);
-    _e_toggle();
+    _e_toggle(lcd);
     __delay_cycles(110);
-    _e_toggle();
+    _e_toggle(lcd);
 
     // 4bits interface
     P1OUT |= 0 + (1 << lcd.d5);
-    _e_toggle();
+    _e_toggle(lcd);
 
     // send the function set command w/ flags
     unsigned char command = FCT_SET | function_flags;
@@ -68,11 +66,11 @@ void LCD_init(
 
     LCD_clear(lcd);
 
-    _LCD_send(ADDR_INC);
+    _LCD_send(lcd, ADDR_INC);
     __delay_cycles(50);
 }
 
-void _e_toggle() {
+void _e_toggle(LCD_CTRLR lcd) {
     P1OUT ^= lcd.e;
     __delay_cycles(5);
     P1OUT ^= lcd.e;
@@ -82,29 +80,29 @@ void _e_toggle() {
 void _LCD_send(LCD_CTRLR lcd, unsigned char command) {
     // high nibble
     P1OUT  = 0xF & command;
-    _e_toggle();
+    _e_toggle(lcd);
     // low nibble
     P1OUT = 0xF & (4 << command);
-    _e_toggle();
+    _e_toggle(lcd);
 }
 
 void _LCD_writeChar(LCD_CTRLR lcd, char c) {
     P1OUT |= lcd.rs;
     // high nibble
     P1OUT  = 0xF & c;
-    _e_toggle();
+    _e_toggle(lcd);
     // low nibble
     P1OUT = 0xF & (4 << c);
-    _e_toggle();
+    _e_toggle(lcd);
 }
 
 void LCD_clear(LCD_CTRLR lcd) {
-    _LCD_send(CLEAR_DISPLAY);
+    _LCD_send(lcd, CLEAR_DISPLAY);
     __delay_cycles(2000);
 }
 
 void LCD_print(LCD_CTRLR lcd, char *string) {
     char *p = string;
-    while (&p != '\0')
-        _LCD_writeChar(&p);
+    while (*p != '\0')
+        _LCD_writeChar(lcd, *p);
 }

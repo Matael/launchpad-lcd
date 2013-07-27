@@ -58,9 +58,8 @@ typedef struct {
 
 void LCD_init(
         LCD_CTRLR lcd,
-        unsigned char function_flags = CTRL_2LINES,
-        unsigned char display_flags = DISPLAY_CTRL_D
-        );
+        unsigned char function_flags,
+        unsigned char display_flags);
 void _e_toggle();
 void _LCD_send(LCD_CTRLR lcd, unsigned char command);
 void _LCD_writeChar(LCD_CTRLR lcd, char c);
