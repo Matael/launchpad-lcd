@@ -51,5 +51,20 @@
 #define SET_CGRAM_ADDR 0x40
 #define SET_DDRAM_ADDR 0x80
 
+typedef struct {
+    // pining
+    unsigned char rs, e, d4, d5, d6, d7;
+} LCD_CTRLR;
+
+void LCD_init(
+        LCD_CTRLR lcd,
+        unsigned char function_flags = CTRL_2LINES,
+        unsigned char display_flags = DISPLAY_CTRL_D
+        );
+void _e_toggle();
+void _LCD_send(LCD_CTRLR lcd, unsigned char command);
+void _LCD_writeChar(LCD_CTRLR lcd, char c);
+void LCD_clear(LCD_CTRLR lcd);
+void LCD_print(LCD_CTRLR lcd, char *string);
 #endif /* !__lcd_h__ */
 

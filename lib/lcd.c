@@ -28,11 +28,6 @@
 
 #include "utilities.h"
 
-typedef struct {
-    // pining
-    unsigned char rs, e, d4, d5, d6, d7;
-} LCD_CTRLR;
-
 void LCD_init(
         LCD_CTRLR lcd,
         unsigned char function_flags = CTRL_2LINES,
